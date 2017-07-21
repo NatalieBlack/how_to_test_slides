@@ -1,0 +1,349 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/white.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+        <section>
+          <section>
+            <h3>Remember testing?</h3>
+<img src="test_output.png" class="larger">
+          </section>
+          <section>
+            <h3>Remember testing?</h3>
+<img src="crmtest.png" class="larger">
+          </section>
+          <section>
+            <h3>Remember testing?</h3>
+<img src="learn_ruby.png" class="larger">
+          </section>
+
+          <section>
+            <h3>Testing Philosophies</h3>
+            <ul>
+              <li>Verification testing ("test after")</li>
+<ol><li>Write code</li><li>Write tests</li></ol>
+<br>
+              <li>Test first/TDD</li>
+<ol><li>Write tests</li><li>Write code</li></ol>
+            </ul>
+          </section>
+
+          <section>
+            <h1>Levels of Tests</h1>
+            <ul>
+              <li>Unit tests
+                  <ul><li>Tests individual methods in isolation</li></ul>
+              </li>
+
+              <li>Integration/Feature/Acceptance/System tests
+                  <ul><li>Check that all the "units" of your app work together to produce the functionality you expect</li></ul>
+                </li>
+            </ul>
+          </section>
+
+          <section>
+            <h3>Example Using Capybara</h3>
+              <pre>
+                <code class="hljs">
+When /I sign in/ do
+  within("#sign_in_form") do
+    fill_in 'Email', with: 'user@example.com'
+    fill_in 'Password', with: 'password'
+  end
+  click_button 'Sign in'
+  expect(page).to have_content 'Welcome user@example.com!'
+end
+                </code>
+              </pre>
+          </section>
+
+
+          <section>
+            <h3>Why test?</h3>
+              <p>Save time - Simulate user interaction so you don't have to</p>
+          </section>
+
+          <section>
+            <h3>Why test?</h3>
+              <p>Safety harness - Regularly run tests as you work on an application to catch bugs as they develop</p>
+          </section>
+
+          <section>
+            <h3>Why test?</h3>
+              <p>Safety harness - It's less risky to refactor/improve/update existing code if you have tests that will tell you if anything breaks</p>
+          </section>
+
+          <section>
+            <h3>Why test?</h3>
+              <p>Safety harness - Running tests in the production environment can catch bugs before deploying new code</p>
+<img src="cidiagram.png" class="larger">
+          </section>
+
+          <section>
+            <h3>Why test?</h3>
+              <p>Change the way you think about and write your code (for the better)</p>
+          </section>
+
+          <section>
+            <h3>Why test?</h3>
+              <p>Documentation - Good tests describe how your code behaves in a readable way</p>
+
+              <pre>
+                <code class="hljs">
+When /I sign in/ do
+  within("#sign_in_form") do
+    fill_in 'Email', with: 'user@example.com'
+    fill_in 'Password', with: 'password'
+  end
+  click_button 'Sign in'
+  expect(page).to have_content 'Welcome user@example.com!'
+end
+                </code>
+              </pre>
+          </section>
+
+
+          <section>
+            <h3>A good test is isolated</h3>
+              <ul>
+                <li>Focuses on testing one thing</li>
+                <li>i.e. a single assertion per unit test</li>
+              </ul>
+          </section>
+
+          <section id="colour_code_section">
+            <pre id="colour_code_pre">
+              <code id="colour_code" class="hljs">### BAD
+def test_colour_blue_has_right_colour_level
+  blue = Colour.blue
+
+  red_level = blue.rgb.r
+  green_level = blue.rgb.g
+  blue_level = blue.rgb.b
+
+  assert(red_level < 0.2)
+  assert(green_level < 0.2)
+  assert(blue_level > 0.8)
+end
+
+### GOOD
+def test_colour_blue_has_right_red_level
+  blue = Colour.blue
+  red_level = blue.rgb.r
+  assert(red_level < 0.2)
+end
+ 
+def test_colour_blue_has_right_green_level
+  blue = Colour.blue
+  green_level = blue.rgb.g
+  assert(green_level < 0.2)
+end
+ 
+def test_colour_blue_has_right_blue_level
+  blue = Colour.blue
+  blue_level = blue.rgb.b
+  assert(blue_level > 0.8)
+end
+</code>
+</pre>
+
+          </section>
+
+
+          <section>
+            <h3>Mentality of writing a test</h3>
+            <ul>
+              <li><p>Arrange, act, assert</p><p>or</p></li>
+              <li><p>Given, when, then</p><p>or</p></li>
+            <li><p>Setup, exercise, verify(, teardown)</p><p>or</p></li>
+              <li>“How should I set this test up?”, “What am I testing?”, “What should the answer look like?”</li>
+            </ul>
+          </section>
+          <section>
+            <pre><code class="hljs ruby">
+# GOOD
+def test_average
+  # arrange
+  numbers = [1, 2, 3]
+  
+  # act
+  average = numbers.average
+
+  # assert
+  assert_equal(2, average)
+end
+</code>
+</pre>
+          </section>
+
+          <section style="width: 1200px; overflow: visible;">
+            <pre class="" style="width: 1000px; overflow: visible; font-size: 18px;max-height: none;"><code class="hljs ruby" style="max-height: none;">
+# arrange!
+def setup
+  @contact = Contact.create('Grace', 'Hopper', 'grace@hopper.com', 'computer scientist')
+end
+...
+def test_find
+  # arrange happened in setup
+
+  # act
+  actual_value = Contact.find(@contact.id)
+
+  # assert
+  expected_value = @contact
+
+  assert_equal(expected_value, actual_value)
+end
+            </code> </pre>
+
+        </section>
+
+          <section style="width: 1000px">
+            <h3>Arrange</h3>
+            <ul>
+              <li>check for unrelated reasons a test could fail</li>
+            </ul>
+            <pre class="side-by-side-code"><code class="hljs ruby">
+# BAD
+def test_user_is_invalid_without_name
+  # arrange
+  user = User.new
+
+  # act
+  is_valid = user.valid?
+
+  # assert
+  assert_equal(is_valid, false)
+end
+            </code> </pre>
+
+            <pre class="side-by-side-code"><code class="hljs ruby">
+# GOOD
+def test_user_is_invalid_without_name
+  # arrange
+  user = User.new(email: "me@gmail.com")
+
+  # act
+  is_valid = user.valid?
+
+  # assert
+  assert_equal(is_valid, false)
+end
+            </code> </pre>
+          </section>
+
+          <section style="width: 1000px">
+            <h4>Assert</h4>
+            <ul>
+              <li>hard-code your expected results, don't generate them</li>
+            </ul>
+            <pre class="side-by-side-code"><code class="hljs ruby">
+# BAD
+def test_average
+  # arrange
+  numbers = [1, 2, 3]
+  
+  # act
+  average = numbers.average
+
+  # assert
+  assert_equal( [1, 2, 3].average, average)
+end
+</code>
+</pre>
+
+            <pre class="side-by-side-code"><code class="hljs ruby">
+# GOOD
+def test_average
+  # arrange
+  numbers = [1, 2, 3]
+  
+  # act
+  average = numbers.average
+
+  # assert
+  assert_equal(2, average)
+end
+</code>
+</pre>
+          </section>
+          <section style="width: 1200px; overflow: visible;">
+            <pre class="" style="width: 1000px; overflow: visible; font-size: 18px;max-height: none;"><code class="hljs ruby" style="max-height: none;">
+  # arrange!
+  def setup
+    @contact = Contact.create('Grace', 'Hopper', 'grace@hopper.com', 'computer scientist')
+  end
+  ...
+  def test_delete
+    # arrange happened in setup
+
+    # act
+    @contact.delete
+
+    # assert
+    expected_value = []
+    actual_value = Contact.all
+
+    assert_equal(expected_value, actual_value)
+  end
+            </code> </pre>
+
+        </section>
+          <section style="width: 1200px; overflow: visible;">
+            <pre class="" style="width: 1000px; overflow: visible; font-size: 18px;max-height: none;"><code class="hljs ruby" style="max-height: none;">
+# arrange!
+def setup
+  @contact = Contact.create('Grace', 'Hopper', 'grace@hopper.com', 'computer scientist')
+end
+...
+def test_update
+  # act
+  @contact.update('note', 'wrote the first compiler in 1952')
+
+  # assert
+  expected_value = 'wrote the first compiler in 1952'
+  actual_value = @contact.note
+
+  assert_equal(expected_value, actual_value)
+end 
+</code> </pre>
+
+        </section>
+
+      </div>
+    </div>
+
+      <script src="lib/js/head.min.js"></script>
+      <script src="js/reveal.js"></script>
+      <script>
+        Reveal.initialize({
+          dependencies: [
+
+          { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          // Zoom in and out with Alt+click
+          { src: 'plugin/zoom-js/zoom.js', async: true },
+          // Speaker notes
+          { src: 'plugin/notes/notes.js', async: true }
+
+          ]
+        });
+      </script>
+      <script>
+        if( window.location.search.match( /print-pdf/gi ) ) {
+          console.log('yes');
+          var link = document.createElement( 'link' );
+          link.rel = 'stylesheet';
+          link.type = 'text/css';
+          link.href = 'reveal.js/css/pdf.css';
+          document.getElementsByTagName( 'head' )[0].appendChild( link );
+        }
+      </script>
+    </body>
+</html>
